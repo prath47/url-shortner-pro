@@ -1,6 +1,6 @@
 const { Router } = require("express");
 const User = require("../models/userModel");
-
+const { connection } = require("mongoose");
 const router = Router();
 
 router.get("/signin", (req, res) => {
@@ -8,10 +8,15 @@ router.get("/signin", (req, res) => {
 });
 
 router.post("/signin", async (req, res) => {
+  const { email, password } = await req.body;
+  console.log(email);
   try {
-    const data = await req.body;
+    const token = await User.matchPasswordAndGenerateToken(email, password);
+    return res.cookie("token", token).redirect("/");
   } catch (error) {
-    console.log(error);
+    return res.render("signin", {
+      message: "Incorrect Email/Pasword",
+    });
   }
 });
 
@@ -22,14 +27,14 @@ router.get("/signup", (req, res) => {
 router.post("/signup", async (req, res) => {
   try {
     const data = await req.body;
-    console.log(data)
+    console.log(data);
     User.create({
       name: data.name,
       email: data.email,
       password: data.password,
     });
 
-    res.redirect('/')
+    res.redirect("/");
   } catch (error) {
     console.log(error);
   }

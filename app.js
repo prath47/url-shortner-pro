@@ -3,8 +3,12 @@ const app = express();
 const mongoose = require("mongoose");
 require("dotenv").config();
 const userRoutes = require("./routes/userRoutes");
+const cookieParser = require("cookie-parser");
+const { checkAuthentication } = require("./middlewares/authentication");
 
 app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(checkAuthentication("token"));
 
 mongoose
   .connect("mongodb://127.0.0.1:27017/url_shortner-pro")
@@ -21,7 +25,9 @@ app.set("views", "views");
 PORT = process.env.PORT || 3000;
 
 app.get("/", (req, res) => {
-  res.render("home");
+  res.render("home", {
+    user: req.user,
+  });
 });
 
 app.use("/user", userRoutes);
