@@ -21,13 +21,17 @@ router.post("/", async (req, res) => {
     });
 
     const allUrls = await Url.find({ email: email });
+
     console.log(allUrls);
     res.render("home", {
       allUrls: allUrls,
+      user: user,
     });
   } catch (error) {
     console.log(error);
   }
 });
+
+
 
 module.exports = router;

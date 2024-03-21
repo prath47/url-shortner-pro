@@ -6,6 +6,7 @@ const userRoutes = require("./routes/userRoutes");
 const cookieParser = require("cookie-parser");
 const { checkAuthentication } = require("./middlewares/authentication");
 const generateURL = require("./routes/generateURL");
+const Url = require("./models/urlModel");
 
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -34,6 +35,20 @@ app.get("/", (req, res) => {
 app.use("/user", userRoutes);
 app.use("/generate-url", generateURL);
 
+app.get("/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    // console.log(id);
+    const data = await Url.findOne({ shortid: id });
+
+    data.clicks++;
+    await data.save();
+
+    return res.redirect(data.fullurl);
+  } catch (error) {
+    console.log(error);
+  }
+});
 app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);
 });

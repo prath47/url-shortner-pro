@@ -21,4 +21,5 @@ const urlSchema = new Schema({
 
 const Url = model("url", urlSchema);
 
+
 module.exports = Url;

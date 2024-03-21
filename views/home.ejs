@@ -31,20 +31,20 @@
         </thead>
         <tbody class="table-group-divider">
           <% if (typeof allUrls !=='undefined' ) { %>
-            <% allUrls.forEach(element=> { %>
+            <% for( let i=0; i < allUrls.length; i++ ) { %>
               <tr class="text-center">
-                <th scope="row">No</th>
-                <td><a href="<%= element.fullurl %>">
-                    <%= element.fullurl %>
+                <th scope="row"><%= i %></th>
+                <td><a href="<%= allUrls[i].fullurl %>">
+                    <%= allUrls[i].fullurl %>
                   </a></td>
-                <td><a href="<%= element.shortid %>">
-                    <%= element.shortid %>
+                <td><a href="<%= allUrls[i].shortid %>">
+                    <%= allUrls[i].shortid %>
                   </a></td>
                 <td>
-                  <%= element.clicks %></a>
+                  <%= allUrls[i].clicks %></a>
                 </td>
               </tr>
-              <% }) %>
+              <% } %>
                 <% } %>
         </tbody>
       </table>
