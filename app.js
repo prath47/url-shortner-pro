@@ -26,10 +26,20 @@ app.set("views", "views");
 
 PORT = process.env.PORT || 3000;
 
-app.get("/", (req, res) => {
-  res.render("home", {
-    user: req.user,
-  });
+app.get("/", async (req, res) => {
+  try {
+    if (req.user) {
+      const data = await Url.find({ email: req.user.email });
+      return res.render("home", {
+        allUrls: data,
+        user: req.user,
+      });
+    } else {
+      return res.render("home");
+    }
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 app.use("/user", userRoutes);
@@ -49,6 +59,7 @@ app.get("/:id", async (req, res) => {
     console.log(error);
   }
 });
+
 app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);
 });
