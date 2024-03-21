@@ -28,16 +28,29 @@ router.post("/signup", async (req, res) => {
   try {
     const data = await req.body;
     console.log(data);
+    if (User.find({ email: data.email })) {
+      return res.render("signup", {
+        message: "User already exists",
+      });
+    }
     User.create({
       name: data.name,
       email: data.email,
       password: data.password,
     });
 
-    res.redirect("/");
+    const token = await User.matchPasswordAndGenerateToken(
+      data.email,
+      data.password
+    );
+    return res.cookie("token", token).redirect("/");
   } catch (error) {
     console.log(error);
   }
+});
+
+router.get("/logout", (req, res) => {
+  res.clearCookie("token").redirect("/");
 });
 
 module.exports = router;
