@@ -14,7 +14,7 @@ app.use(cookieParser());
 app.use(checkAuthentication("token"));
 
 mongoose
-  .connect("mongodb://127.0.0.1:27017/url_shortner-pro")
+  .connect(`${process.env.MongoDBLink}`)
   .then(() => {
     console.log("Mongodb Connected");
   })
@@ -64,15 +64,16 @@ app.get("/:id", async (req, res) => {
 app.get("/delete/:id", islogin , async (req, res) => {
   try {
     const id = req.params.id;
-    console.log("here");
+    // console.log("here");
 
     const found = await Url.findOne({ shortid: id });
-    console.log(req.user);
-    // if (req.user.email !== found.email) return res.send("not authorized");
-    await Url.findOneAndDelete({ shortid: id });
-    console.log(found);
+    // console.log(req.user);
+    // console.log(found);
+    if (req.user.email !== found.email) return res.send("not authorized");
 
-    res.redirect("/");
+    await Url.findOneAndDelete({ shortid: id });
+
+    return res.redirect("/");
   } catch (error) {
     console.log(error);
   }
