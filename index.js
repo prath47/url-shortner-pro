@@ -23,7 +23,7 @@ mongoose
   });
 
 app.set("view engine", "ejs");
-app.set("views", "views");
+app.set("views", path.resolve("./views"));
 
 PORT = process.env.PORT || 3000;
 
