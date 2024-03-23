@@ -16,6 +16,20 @@ function checkAuthentication(cookiename) {
   };
 }
 
+const islogin = (req, res, next)=> {
+  try {
+    if (req.user) {
+    } else {
+      return res.redirect("/user/signin");
+    }
+
+    next();
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 module.exports = {
   checkAuthentication,
+  islogin,
 };

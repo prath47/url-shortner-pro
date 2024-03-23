@@ -13,13 +13,19 @@
         <form method="post" action="/generate-url" enctype="application/x-www-form-urlencoded">
           <div class="mb-3">
             <label for="exampleInputEmail1" class="form-label">Enter URL</label>
-            <input type="url" name="url" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+            <input type="url" name="url" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+              required>
           </div>
           <button type="submit" class="btn btn-primary">Submit</button>
+          <% if (typeof message !=='undefined' ) { %>
+            <div class="alert alert-danger mt-4" role="alert">
+              <%= message %>
+            </div>
+            <% } %>
         </form>
       </div>
     </div>
-    <div class="container-sm border rounded mt-4 shadow p-3 rounded table-responsive">
+    <div class="container-sm border rounded mt-4 shadow p-3 rounded table-responsive table-container">
       <table class="table table-hover">
         <thead class="table-primary">
           <tr class="text-center">
@@ -27,13 +33,16 @@
             <th scope="col">Full Url</th>
             <th scope="col">Shorted</th>
             <th scope="col">Clicks</th>
+            <th scope="col">Delete</th>
           </tr>
         </thead>
         <tbody class="table-group-divider">
           <% if (typeof allUrls !=='undefined' ) { %>
             <% for( let i=0; i < allUrls.length; i++ ) { %>
               <tr class="text-center">
-                <th scope="row"><%= i %></th>
+                <th scope="row">
+                  <%= i %>
+                </th>
                 <td><a href="<%= allUrls[i].fullurl %>">
                     <%= allUrls[i].fullurl %>
                   </a></td>
@@ -43,6 +52,10 @@
                 <td>
                   <%= allUrls[i].clicks %></a>
                 </td>
+                <td>
+                  <a href="/delete/<%=allUrls[i].shortid %>"><button type="button" class="btn-close"
+                      aria-label="Close"></button></a>
+                </td>
               </tr>
               <% } %>
                 <% } %>
@@ -50,7 +63,31 @@
       </table>
     </div>
     <%- include('./partials/footer.ejs') %>
-    <%- include('./partials/scripts.ejs') %>
+      <%- include('./partials/scripts.ejs') %>
+
+        <script>
+          try {
+            const listOfLinks = document.getElementsByClassName("table-container")[0];
+            listOfLinks.addEventListener("click", function (e) {
+              let idElement = e.target.parentElement.children[2].children[0];
+              const id = idElement.innerHTML.trim();
+
+              fetch("https://jsonplaceholder.typicode.com/todos", {
+                method: "POST",
+                body: JSON.stringify({
+                  userId: 1,
+                  title: "Fix my bugs",
+                  completed: false
+                }),
+                headers: {
+                  "Content-type": "application/json; charset=UTF-8"
+                }
+              });
+            })
+          } catch (error) {
+            console.log(error)
+          }
+        </script>
 </body>
 
 </html>

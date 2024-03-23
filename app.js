@@ -7,6 +7,7 @@ const cookieParser = require("cookie-parser");
 const { checkAuthentication } = require("./middlewares/authentication");
 const generateURL = require("./routes/generateURL");
 const Url = require("./models/urlModel");
+const { islogin } = require("./middlewares/authentication");
 
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -48,13 +49,30 @@ app.use("/generate-url", generateURL);
 app.get("/:id", async (req, res) => {
   try {
     const id = req.params.id;
-    // console.log(id);
+
     const data = await Url.findOne({ shortid: id });
+    if (data) {
+      data.clicks++;
+      await data.save();
+      return res.redirect(data.fullurl);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+});
 
-    data.clicks++;
-    await data.save();
+app.get("/delete/:id", islogin , async (req, res) => {
+  try {
+    const id = req.params.id;
+    console.log("here");
 
-    return res.redirect(data.fullurl);
+    const found = await Url.findOne({ shortid: id });
+    console.log(req.user);
+    // if (req.user.email !== found.email) return res.send("not authorized");
+    await Url.findOneAndDelete({ shortid: id });
+    console.log(found);
+
+    res.redirect("/");
   } catch (error) {
     console.log(error);
   }
