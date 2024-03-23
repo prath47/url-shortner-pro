@@ -14,12 +14,12 @@ app.use(cookieParser());
 app.use(checkAuthentication("token"));
 
 mongoose
-  .connect(`${process.env.MongoDBLink}`)
-  .then(() => {
-    console.log("Mongodb Connected");
-  })
-  .catch((err) => {
-    console.log(err);
+  .connect(
+    `mongodb://shortstime400:${process.env.mongoPassword}@ac-i1ydxzx-shard-00-00.bzg4z6h.mongodb.net:27017,ac-i1ydxzx-shard-00-01.bzg4z6h.mongodb.net:27017,ac-i1ydxzx-shard-00-02.bzg4z6h.mongodb.net:27017/?ssl=true&replicaSet=atlas-111wz8-shard-0&authSource=admin&retryWrites=true&w=majority&appName=url-shortner-db`
+  )
+  .then((e) => console.log("connected to mongodb"))
+  .catch((error) => {
+    console.log(error);
   });
 
 app.set("view engine", "ejs");
@@ -61,7 +61,7 @@ app.get("/:id", async (req, res) => {
   }
 });
 
-app.get("/delete/:id", islogin , async (req, res) => {
+app.get("/delete/:id", islogin, async (req, res) => {
   try {
     const id = req.params.id;
     // console.log("here");
