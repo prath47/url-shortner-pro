@@ -8,6 +8,7 @@ const { checkAuthentication } = require("./middlewares/authentication");
 const generateURL = require("./routes/generateURL");
 const Url = require("./models/urlModel");
 const { islogin } = require("./middlewares/authentication");
+const path = require("path");
 
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -23,7 +24,7 @@ mongoose
   });
 
 app.set("view engine", "ejs");
-app.set("views", "views");
+app.set("views", path.resolve("./views"));
 
 PORT = process.env.PORT || 3000;
 
